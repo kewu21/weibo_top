@@ -7,6 +7,7 @@ def init():
     cursor = con.cursor()
     create_weibo_user(cursor)
     create_weibo_relation(cursor)
+    create_weibo_nor(cursor)
     con.commit()
     cursor.close()
 
@@ -37,6 +38,12 @@ def create_weibo_relation(cursor):
             primary key(weibo_user, foer))''')
     except sqlite.InterfaceError:
         print "can't create talbe w_relation"
+
+def create_weibo_nor(cursor):
+    cursor.execute('''drop table if exists w_non_r''')
+    cursor.execute('''create table w_non_r 
+        (weibo_user integer, foer integer,
+        primary key(weibo_user, foer))''')
         
 def get_connection():
     con = sqlite.connect(DATABASE,

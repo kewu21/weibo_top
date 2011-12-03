@@ -91,6 +91,43 @@ class WeiboUser():
         except sqlite.InternalError:
             print "can not update ", self.user_id, "(",self.screen_name,") to scanned"
 
+    @classmethod
+    def get_relation(cls, id_w, foer):
+        cursor.execute('''select weibo_user, foer from w_relation 
+            where weibo_user=? and foer=?''', (id_w, foer))
+        result = cursor.fetchone()
+        return result
+
+    @classmethod
+    def get_non_relation(cls, id_w, foer):
+        cursor.execute('''select weibo_user, foer from w_non_r 
+            where weibo_user=? and foer=?''', (id_w, foer))
+        result = cursor.fetchone()
+        return result
+
+    @classmethod
+    def save_non_relationship(cls, weibo_id, foer_id):
+        try:
+            cursor.execute('''insert into w_non_r(weibo_user, 
+                    foer) values (?,?)''', (weibo_id, foer_id))
+            con.commit()
+        except sqlite.IntegrityError:
+            print "can not relation between", id, "and", foer_id, ") to the database"
+
+    @classmethod
+    def save_relationship(cls, weibo_id, foer_id):
+        try:
+            cursor.execute('''insert into w_relation(weibo_user, 
+                    foer) values (?,?)''', (weibo_id, foer_id))
+            con.commit()
+        except sqlite.IntegrityError:
+            print "can not relation between", id, "and", foer_id, ") to the database"
+
+    @classmethod
+    def get_top_100_by_foer(cls):
+        cursor.execute('''select user_id from w_user where scanned=0 or scanned=1 order by foer_cnt desc limit 0,100''')
+        result = cursor.fetchall() or []
+        return [id for id, in result]
 
     @classmethod
     def get_by_id(cls, twitter_id):
