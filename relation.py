@@ -5,6 +5,12 @@ from time import sleep
 a = get_api()
 TOP_100 = WeiboUser.get_top_100_by_foer()
 
+def relationship():
+    for id in TOP_100:
+        not_foer = WeiboUser.get_top_not_pair(id)
+        for foer in list(set(TOP_100)-set(not_foer)):
+            WeiboUser.save_relationship(id, foer)
+        
 
 def relationship_top():
     for id in TOP_100:
@@ -19,13 +25,12 @@ def relationship_top():
                 except:
                     continue
                 if e.friends:
-                    print id, 'is followered by', foer, 'saving..'
+                    print id, 'is followed by', foer, 'saving..'
                     WeiboUser.save_relationship(id, foer)
                 else:
-                    print id, 'is noe followered by', foer, 'saving..'
-                    WeiboUser.save_relationship(id, foer)
+                    print id, 'is not followed by', foer, 'saving..'
                     WeiboUser.save_non_relationship(id, foer)
                 sleep(1)
 
 if __name__=='__main__':
-    relationship_top()
+    relationship()
