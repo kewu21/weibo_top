@@ -124,6 +124,20 @@ class WeiboUser():
             print "can not relation between", id, "and", foer_id, ") to the database"
 
     @classmethod
+    def get_top_not_pair(cls, id):
+        cursor.execute('''select foer from w_non_r where
+                weibo_user = ?''', (id,))
+        result = cursor.fetchall() or []
+        return [id for id, in result]
+
+    @classmethod
+    def get_top_100_pair(cls):
+        cursor.execute('''select weibo_user, foer from w_relation''')
+        result = cursor.fetchall()
+        return result
+
+
+    @classmethod
     def get_top_100_by_foer(cls):
         cursor.execute('''select user_id from w_user where scanned=0 or scanned=1 order by foer_cnt desc limit 0,100''')
         result = cursor.fetchall() or []
